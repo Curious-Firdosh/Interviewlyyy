@@ -28,13 +28,17 @@ const createUserInDB =  inngest.createFunction (
             });
             
             // sent the User Data that coming from the Clerk To The Stream.js Function that will take an argumanet Userdata 
-            await UpsertStreamUser({
-                id : userdata.clerkId.toString(),
-                name : userdata.name,
-                email : userdata.email,
-                image : userdata.profileImage
-            });
-            
+            const streamResult = await UpsertStreamUser({
+                 id : userdata.clerkId.toString(),
+                 name : userdata.name,
+                 email : userdata.email,
+                 image : userdata.profileImage
+             });
+
+            if (!streamResult) {
+                throw new Error("Failed to sync user to Stream Chat");
+            };
+
         console.log("Testing : That Ingest function Run SuccessFully" , userdata);
 
         } catch (error) {
@@ -59,7 +63,11 @@ const deleteUserFromDB =  inngest.createFunction (
             const {id} = event.data;    
             const deletedUser = await User.findOneAndDelete({clerkId : id});
 
-            await deleteStreamUser(id.toString())
+            const deleteUserinStream = await deleteStreamUser(id.toString());
+
+            if(!deleteUserinStream){
+                throw new Error("Failed to Delete user from  Stream Chat");
+            }
 
              console.log("Testing : That Ingest function Run SuccessFully");
             

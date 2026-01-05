@@ -14,7 +14,7 @@ export const chatClient =  StreamChat.getInstance(apiKey , apiSecret);  // This 
 export const UpsertStreamUser = async(userdata) => {
 
     try {
-            await chatClient.upsertUser([userdata]);
+            await chatClient.upsertUser(userdata);
             return userdata;
     }
     catch (e){

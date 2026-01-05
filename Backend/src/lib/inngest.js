@@ -2,6 +2,7 @@ import { Inngest} from "inngest";
 
 import User from "../model/User.js";
 import { connectDb } from "./db.js";
+import { deleteStreamUser, UpsertStreamUser } from "./stream.js";
 
 export const inngest = new Inngest({id : "interviewlyyy"})
 
@@ -25,7 +26,15 @@ const createUserInDB =  inngest.createFunction (
                 email : email_addresses[0]?.email_address,
                 profileImage : image_url
             });
-
+            
+            // sent the User Data that coming from the Clerk To The Stream.js Function that will take an argumanet Userdata 
+            await UpsertStreamUser({
+                id : userdata.clerkId.toString(),
+                name : userdata.name,
+                email : userdata.email,
+                image : userdata.profileImage
+            });
+            
         console.log("Testing : That Ingest function Run SuccessFully" , userdata);
 
         } catch (error) {
@@ -49,6 +58,8 @@ const deleteUserFromDB =  inngest.createFunction (
 
             const {id} = event.data;    
             const deletedUser = await User.findOneAndDelete({clerkId : id});
+
+            await deleteStreamUser(id.toString())
 
              console.log("Testing : That Ingest function Run SuccessFully");
             

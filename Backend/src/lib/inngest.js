@@ -63,11 +63,8 @@ const deleteUserFromDB =  inngest.createFunction (
             const {id} = event.data;    
             const deletedUser = await User.findOneAndDelete({clerkId : id});
 
-            const deleteUserinStream = await deleteStreamUser(id.toString());
+            await deleteStreamUser(id.toString());
 
-            if(!deleteUserinStream){
-                throw new Error("Failed to Delete user from  Stream Chat");
-            }
 
              console.log("Testing : That Ingest function Run SuccessFully");
             

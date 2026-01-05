@@ -14,7 +14,7 @@ export const chatClient =  StreamChat.getInstance(apiKey , apiSecret);  // This 
 export const UpsertStreamUser = async(userdata) => {
 
     try {
-            await chatClient.upsertUser([userdata]);
+            await chatClient.upsertUser(userdata);
             return userdata;
     }
     catch (e){
@@ -29,9 +29,10 @@ export const deleteStreamUser = async(userId) => {
     try {
             await chatClient.deleteUser(userId);
             console.log("Stream User Deleted Successfully ");
+            return true;
     }
     catch (e){
          console.error("Erorr In Deleting Stream User" , e);
-         
+          return false;
     }
 }

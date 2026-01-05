@@ -4,7 +4,7 @@ import User from "../model/User.js";
 export const protectRoute = [
     requireAuth(),// that will cheack user login or not  
 
-    async (req , res , next) => {
+    async (req , res , next ) => {
 
         try {
             
@@ -20,10 +20,9 @@ export const protectRoute = [
             if(!user) { 
                 return res.status(404).json({message : "user Not Found"});
             };
-
-            
             // attach the userdetails in the request 
             req.user = user;
+               
 
             next()
 

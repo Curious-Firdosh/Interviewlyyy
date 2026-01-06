@@ -7,6 +7,7 @@ import { inngest , functions } from "./lib/inngest.js";
 import cors from "cors";
 import { clerkMiddleware } from '@clerk/express'
 import chatRoute from "./routes/chatRoute.js"
+import sessionRoute from "./routes/sessionRoute.js"
 
 
 const app = express();
@@ -19,9 +20,9 @@ app.use(clerkMiddleware());//@ that will verify the token and then attach the au
 
 
 app.use('/api/chat' , chatRoute);
+app.use('/api/sessions' ,  sessionRoute);
 
-
-
+// to send request to the inngest cloud 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 

@@ -6,7 +6,6 @@ import ProblemDescription from '../Components/Problems/ProblemDescription';
 import CodeEditor from '../Components/Problems/CodeEditor';
 import ProblemOutput from '../Components/Problems/ProblemOutput';
 import { PROBLEMS } from '../data/problems';
-import { LANGUAGE_CONFIG } from '../../../../../Downloads/talent-IQ-master/talent-IQ-master/frontend/src/data/problems';
 import { execCode } from '../lib/piston';
 import toast from "react-hot-toast"
 import confetti from 'canvas-confetti';

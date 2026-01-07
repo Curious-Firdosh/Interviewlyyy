@@ -55,7 +55,6 @@ export  const createSession = async(req,res) => {
         console.log("Erorr While Creating Session " , e);
         return res.status(500).json({
             message : "Internal Server Error",
-            data : e
         })
         
     }
@@ -84,7 +83,6 @@ export const  getActiveSessions = async (_ , res) => {
         console.log("Erorr While  geting ActiveSessions  " , e);
         return res.status(500).json({
             message : "Internal Server Error",
-            data : e
         })
         
     }
@@ -96,7 +94,7 @@ export const getRecentSessions = async (req,res) => {
         // get session where the user is host or participent 
          const userId = req.user._id 
 
-            const recentSessions = await Session.find({
+            const sessions = await Session.find({
                 status : "Compleated",
                 $or : [{host : userId} , {participant : userId}]
             })
@@ -106,7 +104,7 @@ export const getRecentSessions = async (req,res) => {
 
            return res.status(200).json({
                 message : "Successfully fetched Completed Sessions",
-                recentSessions
+                sessions
             });
     }
      catch (e) {
@@ -195,28 +193,24 @@ export const joinSession = async (req,res) => {
             });
         }
         
-        // @ step 9 : we update session participant field with the user id
-        const updatedSession = await Session.findByIdAndUpdate(
-            id,
-            { participant: userId },
-            { new: true }
-        );
-
-        // @ step 10 : add user to stream video call channel as a participant
-        await streamClient.video.call("default", session.callId).addParticipant(clerkId, {
-            data: {
-                joined_at: new Date().toISOString(),
-            },
-        });
-
+        
         // @ chat messaging channel -- add member to chat channel
         const channel = chatClient.channel("messaging", session.callId);
         await channel.addMembers([clerkId]);
 
+         // ✅ JOIN VIDEO CALL (THIS WAS MISSING)
+        await streamClient.video
+                    .call("default", session.callId)
+                    .addParticipant(clerkId);
+
+        // @ step 9 : we update session participant field with the user id
+        session.participant = userId;
+        await session.save();
+
 
         return res.status(200).json({
             message: "Successfully joined the session",
-            updatedSession
+            session
         });
 
     }
@@ -265,17 +259,19 @@ export const endSession = async (req,res) => {
             })
         };
 
+       
         session.status = "Compleated"
         await session.save();
 
-        //@ step 7 : delete the video call Channel 
-
+         //@ step 7 : delete the video call Channel 
         const call = streamClient.video.call("default" , session.callId)
         await call.delete({hard : true});
 
          //@ step 8 : delete the chat Channel 
          const chat = chatClient.channel("messaging" , session.callId);
-         await chat.delete()
+         await chat.delete();
+
+
 
          return res.status(200).json({
             message : "Session Ended SuccessFully",

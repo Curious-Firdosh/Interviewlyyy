@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
 import { useActiveSessions, useCreateSession, useMyRecentSessions } from '../Hooks/useSessions'
-import { data, useNavigate } from 'react-router'
+import {  useNavigate } from 'react-router'
 import { useUser } from '@clerk/clerk-react'
 import WelcomeSection from '../Components/Dashboard/WelcomeSection'
 import StatsCards from '../Components/Dashboard/StatsCards'
@@ -51,6 +51,13 @@ const Dashboard = () => {
 
   }
 
+
+  const isUserInSession = (session) => {
+    if(!user.id) return false;
+
+    return session?.host?.clerkId === user.id || session?.participant?.clerkId === user.id;
+  }
+
   
 
   return (
@@ -70,10 +77,17 @@ const Dashboard = () => {
                       recentSessionsCount={recentSessions.length}
                     
                     />
-                    <ActiveSession/>
+                    <ActiveSession
+                      sessions = {activeSession}
+                      isLoading = {loadingActiveSession}
+                      isUserInSession = {isUserInSession}
+                    />
                 </div>
 
-                <RecentSession/>
+                <RecentSession
+                    sessions = {recentSessions}
+                    isLoading = {loadingRecentSession}
+                />
           </div>
 
           <CreateSessionModal 

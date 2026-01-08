@@ -15,7 +15,11 @@ const app = express();
 
 //MiddleWares- // Important: ensure you add JSON middleware to process incoming JSON POST payloads
 app.use(express.json());
-app.use(cors({origin : ENV.CLIENT_URL , credentials : true}));
+app.use(
+    cors( {origin : [
+        "http://localhost:5173",
+         ENV.CLIENT_URL
+] , credentials : true}));
 app.use(clerkMiddleware());//@ that will verify the token and then attach the auth you can use req.auth()
 
 

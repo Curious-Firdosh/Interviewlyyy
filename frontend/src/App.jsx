@@ -25,6 +25,7 @@ function App() {
               <Route path='/dashboard' element= {isSignedIn ? <Dashboard/> : <Navigate to={'/'} />}/>
               <Route path='/problems/:id' element= {isSignedIn ? <ProblemDetails/> : <Navigate to={'/'} />}/>
               <Route path='/session/:id' element= {isSignedIn ? <SessionPage/> : <Navigate to={'/'} />}/>
+            
               {/* <Route path='/' element= {<Home/>}/>
               <Route path='/problems' element= {<ProblemsPage/>}/>
               <Route path='/dashboard' element= {<Dashboard/>}/> */}

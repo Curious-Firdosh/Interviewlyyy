@@ -44,9 +44,12 @@ export const useSessionById = (id) => {
       
     const result = useQuery({
         queryKey : ["session" , id],
-        queryFn : sessionApi.getSessionbyId(id),
+        queryFn : () => sessionApi.getSessionbyId(id),
         enabled : !!id,
-        refetchInterval : 5000
+        staleTime: 3000,
+        refetchInterval: (data) =>
+                data?.status === "Active" ? 5000 : false,
+        
     });
 
     return result;
@@ -55,11 +58,11 @@ export const useSessionById = (id) => {
 
 
 
-export const useJoinSession = (id) => {
+export const useJoinSession = () => {
     
     const result = useMutation ({
-        mutationKey : ["joinSession" , id],
-        mutationFn : sessionApi.joinSessionWithId(id),
+        mutationKey : ["joinSession"],
+        mutationFn : sessionApi.joinSessionWithId,
         onSuccess : () => toast.success("Session Joined SuccessFully"),
         onError  : (error) => toast.error(error?.response?.data?.message || "Failed To Join Room")
     });
@@ -68,11 +71,11 @@ export const useJoinSession = (id) => {
 };
 
 
-export const useEndSession = (id) => {
+export const useEndSession = () => {
     
     const result = useMutation ({
-        mutationKey : ["EndSession" , id],
-        mutationFn : sessionApi.endSessionById(id),
+        mutationKey : ["EndSession"],
+        mutationFn : sessionApi.endSessionById,
         onSuccess : () => toast.success("Session End SuccessFully"),
         onError  : (error) => toast.error(error?.response?.data?.message || "Failed To End Room")
     });

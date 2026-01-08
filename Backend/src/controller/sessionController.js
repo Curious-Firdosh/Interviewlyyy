@@ -198,10 +198,6 @@ export const joinSession = async (req,res) => {
         const channel = chatClient.channel("messaging", session.callId);
         await channel.addMembers([clerkId]);
 
-         // ✅ JOIN VIDEO CALL (THIS WAS MISSING)
-        await streamClient.video
-                    .call("default", session.callId)
-                    .addParticipant(clerkId);
 
         // @ step 9 : we update session participant field with the user id
         session.participant = userId;

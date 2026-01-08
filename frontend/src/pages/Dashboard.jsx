@@ -24,8 +24,9 @@ const Dashboard = () => {
   const {data :recentSessionsData ,isLoading : loadingRecentSession} = useMyRecentSessions();
 
   const activeSession = activeSessionsData?.sessions || [];
-  const recentSessions = recentSessionsData?.recentSessions || [];
+  const recentSessions = recentSessionsData?.sessions || [];
 
+ 
   const handleCreateRoom = () => {
 
     if(!roomConfig.problem || !roomConfig.difficulty) {

@@ -9,7 +9,10 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { getDifficultyBadgeClass } from '../lib/utils';
 import ProblemOutput from '../Components/Problems/ProblemOutput';
 import CodeEditor from '../Components/Problems/CodeEditor';
-import { Loader2Icon, LogOutIcon } from 'lucide-react';
+import { Loader2Icon, LogOutIcon, PhoneOffIcon, Zap } from 'lucide-react';
+import useStreamClient from '../Hooks/useStreamClient';
+import {StreamCall, StreamVideo} from '@stream-io/video-react-sdk';
+import VideocallUi from '../Components/SessionPage/VideocallUi';
 
 const SessionPage = () => {
 
@@ -30,6 +33,10 @@ const SessionPage = () => {
     const isHost = session?.host?.clerkId === user?.id;
     const isParticipant = session?.participant?.clerkId === user?.id;
 
+    const {call , channel , chatClient , initializingCall , streamClient} = useStreamClient(session , loadingSession , isHost , isParticipant)
+
+  
+
      // find the problem data based on session problem title
   const problemData = session?.problem
     ? Object.values(PROBLEMS).find((p) => p.id === session.problem)
@@ -43,7 +50,7 @@ const SessionPage = () => {
      const hasAutoJoinedRef = useRef(false);
 
     // auto-join session if user is not already a participant and not the host
-     useEffect(() => {
+    useEffect(() => {
     
         if (!session || !user || loadingSession) return;
         if (isHost || isParticipant) return;
@@ -55,7 +62,7 @@ const SessionPage = () => {
 
         // remove the joinSessionMutation, refetch from dependencies to avoid infinite loop
 
-    }, [session, user, loadingSession, isHost, isParticipant, id]);
+    },[session, user, loadingSession, isHost, isParticipant, id]);
 
 
 
@@ -69,19 +76,20 @@ const SessionPage = () => {
 
    // update code when problem loads or changes
    useEffect(() => {
+
         if (problemData?.starterCode?.[selectedLanguage]) {
-        setCode(problemData.starterCode[selectedLanguage]);
+            setCode(problemData.starterCode[selectedLanguage]);
         }
    }, [problemData, selectedLanguage]);
 
    const handleLanguageChange = (e) => {
-    const newLang = e.target.value;
-    setSelectedLanguage(newLang);
-    // use problem-specific starter code
-    const starterCode = problemData?.starterCode?.[newLang] || "";
-    setCode(starterCode);
-    setOutput(null);
-  };
+        const newLang = e.target.value;
+        setSelectedLanguage(newLang);
+        // use problem-specific starter code
+        const starterCode = problemData?.starterCode?.[newLang] || "";
+        setCode(starterCode);
+        setOutput(null);
+    };
 
 
   const handleRunCode = async () => {
@@ -102,14 +110,6 @@ const SessionPage = () => {
 
 
 
-
-
-
-    
-
-
-    
-    
 
   return (
    <div className="h-screen bg-base-100 flex flex-col">
@@ -288,7 +288,52 @@ const SessionPage = () => {
                 <PanelResizeHandle className="w-2 hover:bg-primary bg-base-300 transition-colors duration-200 cursor-col-resize " />
 
                 <Panel defaultSize={50} minSize={30}>
-                    streamClient
+                    
+                    <div className="h-full bg-base-200 p-4 overflow-auto">
+                        
+                        {  initializingCall ? (
+                                <div className="h-full flex items-center justify-center">
+                                    <div className="text-center">
+                                        <Loader2Icon className="w-12 h-12 mx-auto animate-spin text-primary mb-4" />
+                                        <p className="text-lg">Connecting to video call...</p>
+                                    </div>
+                                </div>
+                            ) : !streamClient || !call ? (
+                                    <div className="h-full flex items-center justify-center">
+                                        <div className="card bg-base-100 shadow-xl max-w-md">
+                                            <div className="card-body items-center text-center">
+                                            <div className="w-24 h-24 bg-error/10 rounded-full flex items-center justify-center mb-4">
+                                                <PhoneOffIcon className="w-12 h-12 text-error" />
+                                            </div>
+                                            <h2 className="card-title text-2xl">Connection Failed</h2>
+                                            <p className="text-base-content/70">Unable to connect to the video call</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                            ) : (
+                               
+                                <div className="h-full"> 
+                                        <StreamVideo client={streamClient}>
+
+                                                <StreamCall call={call}>
+                                                    <VideocallUi
+                                                        chatClient = {chatClient}
+                                                        channel = {channel}
+                                                    >
+
+                                                    </VideocallUi>
+
+                                                </StreamCall>
+
+                                        </StreamVideo>
+                                </div>
+                            )
+                        }
+                            
+                        
+                    </div>
+                   
                 </Panel>
 
 

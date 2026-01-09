@@ -1,39 +1,30 @@
+
 import { requireAuth } from "@clerk/express";
-import User from "../model/User.js";
+ import User from "../model/User.js";
+
 
 export const protectRoute = [
-    requireAuth(),// that will cheack user login or not  
+  requireAuth(),
 
-    async (req , res , next ) => {
+  async (req, res, next) => {
+    console.log("STEP 1: entered protectRoute");
 
-        try {
-            
-            const clerkId = req.auth?.userId;
-            
-            if(!clerkId) { 
-                return res.status(401).json({message : "Unauthrized User"});
-            };
+    try {
+      const clerkId = req.auth?.userId;
+      console.log("STEP 2: clerkId =", clerkId);
 
-            // Find User In DB By Clerk Id
-            const user = await User.findOne({clerkId});
+      const user = await User.findOne({ clerkId });
+      console.log("STEP 3: user =", user);
 
-            if(!user) { 
-                return res.status(404).json({message : "user Not Found"});
-            };
-            // attach the userdetails in the request 
-            req.user = user;
-               
+      if (!user) {
+        return res.status(404).json({ message: "User Not Found" });
+      }
 
-            next()
-
-        }
-        catch (e){
-            console.error("Error In Protected middileware" , e);
-            return res.status(500).json({message : "Internal Server Error"});
-            
-        }
+      req.user = user;
+      next();
+    } catch (e) {
+      console.error("PROTECT ERROR:", e);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-
-    
-]
-
+  },
+];

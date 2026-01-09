@@ -1,0 +1,21 @@
+{
+  "name": "interviewlyyy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "build" : "npm install --prefix Backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm run start --prefix Backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Curious-Firdosh/Interviewlyyy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Curious-Firdosh/Interviewlyyy/issues"
+  },
+  "homepage": "https://github.com/Curious-Firdosh/Interviewlyyy#readme"
+}

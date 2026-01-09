@@ -27,6 +27,7 @@ app.use(cors({
 app.use(clerkMiddleware());//@ that will verify the token and then attach the auth you can use req.auth()
 
 
+
 app.use('/api/chat' , chatRoute);
 app.use('/api/sessions' ,  sessionRoute);
 
@@ -34,11 +35,21 @@ app.use('/api/sessions' ,  sessionRoute);
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 
-app.get("/" , (_,res) => {
+app.get("/health" , (_,res) => {
     res.send("Helllo Jiiii Welcome To The InterViewlyyyy")
 });
 
+// @ Make App Ready For Deployment
+if (ENV.NODE_ENV === "production") {
 
+  const __dirname = path.resolve();
+
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("/{*any}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
 
 
 //!! Best Way To Start The Server 

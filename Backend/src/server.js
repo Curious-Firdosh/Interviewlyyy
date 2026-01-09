@@ -1,6 +1,7 @@
 import { connectDb } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 import { serve } from "inngest/express";
+import path from "path";
 
 import express from "express";
 import { inngest , functions } from "./lib/inngest.js";
@@ -9,17 +10,20 @@ import { clerkMiddleware } from '@clerk/express'
 import chatRoute from "./routes/chatRoute.js"
 import sessionRoute from "./routes/sessionRoute.js"
 
-
 const app = express();
+
 
 
 //MiddleWares- // Important: ensure you add JSON middleware to process incoming JSON POST payloads
 app.use(express.json());
-app.use(
-    cors( {origin : [
-        "http://localhost:5173",
-         ENV.CLIENT_URL
-] , credentials : true}));
+
+
+app.use(cors({
+    origin: true,        // reflect request origin
+    credentials: true,   // allow cookies
+}));
+
+
 app.use(clerkMiddleware());//@ that will verify the token and then attach the auth you can use req.auth()
 
 
@@ -35,10 +39,12 @@ app.get("/" , (_,res) => {
 });
 
 
+
+
 //!! Best Way To Start The Server 
 const startServer = async () => {
 
-    try {
+    try {   
         
         await  connectDb();
         app.listen(ENV.PORT, () => {

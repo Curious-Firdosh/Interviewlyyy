@@ -1,6 +1,6 @@
 # Interviewlyy
 
-![Interviewlyy Home Page](screenshots/home.png)
+![Interviewlyy Home Page](screenshots/Home.png)
 
 Interviewlyy is a full stack interview practice platform built to simulate real technical interviews.  
 The focus of this project is real world architecture, production level behavior, and hands on learning instead of tutorial based demos.
@@ -96,13 +96,13 @@ It is designed to feel close to an actual technical interview environment.
 ## Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/Home.png)
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 
 ### Problems Page
-![Problems Page](screenshots/Allproblems.png)
+![Problems Page](screenshots/AllProblems.png)
 
 ### Interview Session Page
 ![Interview Session](screenshots/JoinedSesssion.png)

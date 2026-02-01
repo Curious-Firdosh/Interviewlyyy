@@ -35,7 +35,7 @@ app.use('/api/sessions' ,  sessionRoute);
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 
-app.get("/" , (_,res) => {
+app.get("/health" , (_,res) => {
     res.send("Helllo Jiiii Welcome To The InterViewlyyyy")
 });
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 // api/session
 router.post('/' , protectRoute , createSession);
-router.get('/active' , getActiveSessions);
+router.get('/active' , protectRoute ,getActiveSessions);
 router.get('/my-recent-sessions' , protectRoute ,getRecentSessions);
 
 router.get("/:id" , protectRoute , getSessionbyId);
